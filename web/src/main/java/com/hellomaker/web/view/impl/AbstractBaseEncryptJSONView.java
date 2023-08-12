@@ -1,20 +1,14 @@
 package com.hellomaker.web.view.impl;
 
 
-import com.hellomaker.web.security.TextEncrypt;
 import com.hellomaker.web.view.AbstractEncryptTextView;
 
-public class BaseEncryptJSONView extends AbstractEncryptTextView {
+public abstract class AbstractBaseEncryptJSONView extends AbstractEncryptTextView {
     BaseJSONView baseJSONView = new BaseJSONView();
 
     @Override
     public String rawContent() {
         return baseJSONView.content();
-    }
-
-    @Override
-    public TextEncrypt getTextEncrypt() {
-        return null;
     }
 
     public BaseJSONView getBaseJSONView() {

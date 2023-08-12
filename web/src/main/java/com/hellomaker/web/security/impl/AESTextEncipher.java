@@ -1,6 +1,7 @@
 package com.hellomaker.web.security.impl;
 
 import com.hellomaker.web.common.util.AESUtil;
+import com.hellomaker.web.security.TextEncipher;
 import com.hellomaker.web.security.exception.SecurityKeyNotConfigException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
-public class DefaultTextEncryptAndDecrypt implements TextEncryptAndDecrypt{
+public class AESTextEncipher implements TextEncipher {
 
     @Value("hellomaker.security.secretKey")
     String secretKey;

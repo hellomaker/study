@@ -1,6 +1,9 @@
 package com.hellomaker.web.view.impl;
 
 import com.hellomaker.web.common.ViewConst;
+import com.hellomaker.web.security.TextEncipher;
+import com.hellomaker.web.security.impl.AESTextEncipher;
+import com.hellomaker.web.security.impl.DefaultTextEncryptAndDecrypt;
 
 /**
  *
@@ -36,6 +39,11 @@ public class RestViewBuilder{
         return this;
     }
 
+    public RestViewBuilder append(String key, Object value) {
+        builder.append(key, value);
+        return this;
+    }
+
     public BaseJSONViewBuilder baseBuilder() {
         return builder;
     }
@@ -44,11 +52,36 @@ public class RestViewBuilder{
         return builder.build();
     }
 
-    public BaseEncryptJSONView buildEncrypt() {
+    public AbstractBaseEncryptJSONView buildEncrypt() {
         BaseJSONView baseJSONView = build();
         //加密的jsonView
-        BaseEncryptJSONView baseEncryptJSONView = new BaseEncryptJSONView();
-        baseEncryptJSONView.setBaseJSONView(baseJSONView);
-        return baseEncryptJSONView;
+        AbstractBaseEncryptJSONView abstractBaseEncryptJSONView = new DelegateEncryptJSONView();
+        abstractBaseEncryptJSONView.setBaseJSONView(baseJSONView);
+        return abstractBaseEncryptJSONView;
+    }
+
+    public AbstractBaseEncryptJSONView buildEncrypt(TextEncipher textEncipher) {
+        BaseJSONView baseJSONView = build();
+        //加密的jsonView
+        AbstractBaseEncryptJSONView abstractBaseEncryptJSONView = new SimpleEncryptJSONView(textEncipher);
+        abstractBaseEncryptJSONView.setBaseJSONView(baseJSONView);
+        return abstractBaseEncryptJSONView;
+    }
+
+    private static TextEncipher delegateTextEncrypt;
+    private static TextEncipher getDelegateTextEncrypt() {
+        if (delegateTextEncrypt == null) {
+
+        }
+    }
+
+    private class DelegateEncryptJSONView extends AbstractBaseEncryptJSONView {
+        @Override
+        public TextEncipher getTextEncipher() {
+            if (delegateTextEncrypt == null) {
+                delegateTextEncrypt = new AESTextEncipher();
+            }
+            return delegateTextEncrypt;
+        }
     }
 }

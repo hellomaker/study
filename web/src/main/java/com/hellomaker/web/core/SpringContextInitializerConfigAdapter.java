@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 /**
  * 适配器
  */
-public class SpringInitializerConfigAdapter implements SpringInitializerConfig{
+public class SpringContextInitializerConfigAdapter implements SpringContextInitializerConfig {
     @Override
     public void initializerTriggerConfig(InitializerTrigger initializerTrigger) {
 

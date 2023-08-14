@@ -3,6 +3,8 @@ package com.hellomaker.web.core;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -20,16 +22,29 @@ public class SpringContextInitializerTrigger implements InitializerTrigger, Appl
     //@Async
     @EventListener(ContextRefreshedEvent.class)
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        applicationContext = event.getApplicationContext();
+        System.out.println("app : " + applicationContext.getDisplayName() + ";" + applicationContext.getClass() + applicationContext.getApplicationName());
+        String[] beanNamesForAnnotation = applicationContext.getBeanNamesForAnnotation(Configuration.class);
         if(event.getApplicationContext().getParent() == null)//root application context 没有parent，他就是老大.
         {
             applicationContext = event.getApplicationContext();
-            Map<String, SpringInitializerConfig> springInitializerConfigMap = applicationContext.getBeansOfType(SpringInitializerConfig.class);
-            for (Map.Entry<String, SpringInitializerConfig> springInitializerConfigEntry : springInitializerConfigMap.entrySet()) {
+            Map<String, SpringContextInitializerConfig> springInitializerConfigMap = applicationContext.getBeansOfType(SpringContextInitializerConfig.class);
+            for (Map.Entry<String, SpringContextInitializerConfig> initializerConfigEntry : springInitializerConfigMap.entrySet()) {
                 //调用配置器中的方法
-                springInitializerConfigEntry.getValue().initializerTriggerConfig(this);
-                springInitializerConfigEntry.getValue().configWithApplicationContext(applicationContext);
-                log.info("spring 触发器 初始化配置 ； " + springInitializerConfigEntry.toString());
+                initializerConfigEntry.getValue().initializerTriggerConfig(this);
+                initializerConfigEntry.getValue().configWithApplicationContext(applicationContext);
+                log.info("spring 触发器 初始化配置 ； " + initializerConfigEntry.toString());
             }
+            Map<String, SpringConfigurationContextInitializerConfig> springConfigurationContextInitializerConfigMap = 
+                    applicationContext.getBeansOfType(SpringConfigurationContextInitializerConfig.class);
+            for (Map.Entry<String, SpringConfigurationContextInitializerConfig> springConfigurationContextInitializerConfigEntry 
+                    : springConfigurationContextInitializerConfigMap.entrySet()) {
+                //调用配置器的方法
+                springConfigurationContextInitializerConfigEntry.getValue().initializerTriggerConfig(this);
+                ApplicationContext applicationContext = new AnnotationConfigApplicationContext(springConfigurationContextInitializerConfigEntry.getValue().getClass());
+
+            }
+            
             log.info("spring 触发器初始化正在触发所有的初始器");
             initialize();
         }

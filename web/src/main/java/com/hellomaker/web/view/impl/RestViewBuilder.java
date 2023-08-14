@@ -3,7 +3,6 @@ package com.hellomaker.web.view.impl;
 import com.hellomaker.web.common.ViewConst;
 import com.hellomaker.web.security.TextEncipher;
 import com.hellomaker.web.security.impl.AESTextEncipher;
-import com.hellomaker.web.security.impl.DefaultTextEncryptAndDecrypt;
 
 /**
  *
@@ -71,8 +70,9 @@ public class RestViewBuilder{
     private static TextEncipher delegateTextEncrypt;
     private static TextEncipher getDelegateTextEncrypt() {
         if (delegateTextEncrypt == null) {
-
+            return null;
         }
+        return delegateTextEncrypt;
     }
 
     private class DelegateEncryptJSONView extends AbstractBaseEncryptJSONView {

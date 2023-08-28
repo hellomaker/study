@@ -12,7 +12,7 @@ import com.hellomaker.web.security.exception.TextEncipherNotFountException;
  * @author  xianzhikun
  * @date    2023/8/11 0:32
  */
-public abstract class AbstractEncryptTextView extends AbstractTextView {
+public abstract class AbstractEncryptTextView extends AbstractTextView implements TextEncrypt{
 
     @Override
     public String content() {
@@ -24,8 +24,4 @@ public abstract class AbstractEncryptTextView extends AbstractTextView {
             return null;
         }
     }
-
-    public abstract String rawContent();
-
-    public abstract TextEncipher getTextEncipher();
 }

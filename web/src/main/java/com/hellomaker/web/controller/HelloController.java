@@ -16,7 +16,7 @@ public class HelloController {
     TextView get() {
 
 
-        return RestViewBuilder.builder().message("hello").data("hello world").buildEncrypt();
+        return RestViewBuilder.builder().message("hello").data("hello world").encrypt().build();
     }
 
 }

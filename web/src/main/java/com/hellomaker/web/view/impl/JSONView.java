@@ -12,7 +12,7 @@ import com.hellomaker.web.view.AbstractTextView;
  * @author  xianzhikun
  * @date    2023/8/10 23:28
  */
-public class BaseJSONView extends AbstractTextView {
+public class JSONView extends AbstractTextView {
     JSONObject jsonBody;
 
     @Override

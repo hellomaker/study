@@ -24,10 +24,10 @@ public class SpringContextInitializerTrigger implements InitializerTrigger, Appl
     public void onApplicationEvent(ContextRefreshedEvent event) {
         applicationContext = event.getApplicationContext();
         System.out.println("app : " + applicationContext.getDisplayName() + ";" + applicationContext.getClass() + applicationContext.getApplicationName());
-        String[] beanNamesForAnnotation = applicationContext.getBeanNamesForAnnotation(Configuration.class);
+//        String[] beanNamesForAnnotation = applicationContext.getBeanNamesForAnnotation(Configuration.class);
         if(event.getApplicationContext().getParent() == null)//root application context 没有parent，他就是老大.
         {
-            applicationContext = event.getApplicationContext();
+//            applicationContext = event.getApplicationContext();
             Map<String, SpringContextInitializerConfig> springInitializerConfigMap = applicationContext.getBeansOfType(SpringContextInitializerConfig.class);
             for (Map.Entry<String, SpringContextInitializerConfig> initializerConfigEntry : springInitializerConfigMap.entrySet()) {
                 //调用配置器中的方法
@@ -35,16 +35,6 @@ public class SpringContextInitializerTrigger implements InitializerTrigger, Appl
                 initializerConfigEntry.getValue().configWithApplicationContext(applicationContext);
                 log.info("spring 触发器 初始化配置 ； " + initializerConfigEntry.toString());
             }
-            Map<String, SpringConfigurationContextInitializerConfig> springConfigurationContextInitializerConfigMap = 
-                    applicationContext.getBeansOfType(SpringConfigurationContextInitializerConfig.class);
-            for (Map.Entry<String, SpringConfigurationContextInitializerConfig> springConfigurationContextInitializerConfigEntry 
-                    : springConfigurationContextInitializerConfigMap.entrySet()) {
-                //调用配置器的方法
-                springConfigurationContextInitializerConfigEntry.getValue().initializerTriggerConfig(this);
-                ApplicationContext applicationContext = new AnnotationConfigApplicationContext(springConfigurationContextInitializerConfigEntry.getValue().getClass());
-
-            }
-            
             log.info("spring 触发器初始化正在触发所有的初始器");
             initialize();
         }

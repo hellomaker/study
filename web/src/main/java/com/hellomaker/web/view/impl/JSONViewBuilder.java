@@ -10,14 +10,14 @@ import com.alibaba.fastjson.JSONObject;
  * @author  xianzhikun
  * @date    2023/8/10 23:28
  */
-public class BaseJSONViewBuilder {
+public class JSONViewBuilder {
 
     //不允许外部构造
-    private BaseJSONViewBuilder () {
+    private JSONViewBuilder() {
     };
 
-    public static BaseJSONViewBuilder builder() {
-        BaseJSONViewBuilder builder = new BaseJSONViewBuilder();
+    public static JSONViewBuilder builder() {
+        JSONViewBuilder builder = new JSONViewBuilder();
         builder.jsonBody = new JSONObject();
         return builder;
     }
@@ -34,7 +34,7 @@ public class BaseJSONViewBuilder {
      * @author  xianzhikun
      * @date    2023/8/10 22:36
      */
-    public BaseJSONViewBuilder append(String key, Object value) {
+    public JSONViewBuilder append(String key, Object value) {
         jsonBody.put(key, value);
         return this;
     }
@@ -44,13 +44,13 @@ public class BaseJSONViewBuilder {
      * @describe: 构造BaseJSONView 对象
      *
      * @param
-     * @return  {{@link BaseJSONView}}
+     * @return  {{@link JSONView}}
      * @author  xianzhikun
      * @date    2023/8/10 23:02
      */
-    public BaseJSONView build() {
-        BaseJSONView baseJSONView = new BaseJSONView();
-        baseJSONView.setJsonBody(jsonBody);
-        return baseJSONView;
+    public JSONView build() {
+        JSONView JSONView = new JSONView();
+        JSONView.setJsonBody(jsonBody);
+        return JSONView;
     }
 }

@@ -6,9 +6,12 @@ import com.hellomaker.web.core.SpringContextInitializerConfigAdapter;
 import com.hellomaker.web.security.TextEncipher;
 import com.hellomaker.web.security.exception.SecurityKeyNotConfigException;
 import com.hellomaker.web.security.exception.TextEncipherNotFountException;
+import com.hellomaker.web.view.initializer.ViewInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.Resource;
 
 @Configuration
 public class ViewConfigContext extends SpringContextInitializerConfigAdapter {
@@ -17,41 +20,20 @@ public class ViewConfigContext extends SpringContextInitializerConfigAdapter {
         System.out.println("创建 ViewConfigContext");
     }
 
-    @Bean
-    TextEncipher textEncipher() {
-        System.out.println("创建 text encipher");
-        return new TextEncipher() {
-            @Override
-            public String decrypt(String encryptContent) throws SecurityKeyNotConfigException, TextEncipherNotFountException {
-                return null;
-            }
-
-            @Override
-            public String encrypt(String sourceContent) throws SecurityKeyNotConfigException, TextEncipherNotFountException {
-                return null;
-            }
-        };
-    }
+    @Resource
+    ViewInitializer viewInitializer;
 
     @Override
     public void initializerTriggerConfig(InitializerTrigger initializerTrigger) {
-        initializerTrigger.registerInitializer(new Initializer() {
-            @Override
-            public void initBySpringApplicationContext(ApplicationContext applicationContext) {
+        initializerTrigger.registerInitializer(viewInitializer);
 
-            }
-
-            @Override
-            public void initByOther() {
-
-            }
-        });
+        System.out.println("注册初始化器");
     }
 
     TextEncipher textEncipher;
 
     @Override
     public void configWithApplicationContext(ApplicationContext applicationContext) {
-        super.configWithApplicationContext(applicationContext);
+        System.out.println("配置applicaiton ");
     }
 }

@@ -1,9 +1,8 @@
 package com.hellomaker.web.view.impl;
 
 import com.hellomaker.web.security.TextEncipher;
-import com.hellomaker.web.view.AbstractEncryptTextView;
 
-public class SimpleEncryptJSONView extends AbstractBaseEncryptJSONView {
+public class SimpleEncryptJSONView extends AbstractEncryptJSONView {
     private TextEncipher textEncrypt;
 
     public SimpleEncryptJSONView(TextEncipher textEncrypt) {

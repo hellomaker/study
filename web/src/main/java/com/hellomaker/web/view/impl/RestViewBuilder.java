@@ -2,7 +2,8 @@ package com.hellomaker.web.view.impl;
 
 import com.hellomaker.web.common.ViewConst;
 import com.hellomaker.web.security.TextEncipher;
-import com.hellomaker.web.security.impl.AESTextEncipher;
+
+import java.util.Objects;
 
 /**
  *
@@ -17,11 +18,13 @@ public class RestViewBuilder{
 
     public static RestViewBuilder builder() {
         RestViewBuilder builder = new RestViewBuilder();
-        builder.builder = BaseJSONViewBuilder.builder();
+        builder.builder = JSONViewBuilder.builder();
         return builder;
     }
     //适配器模式，BaseJSONViewBuilder属性
-    BaseJSONViewBuilder builder;
+    JSONViewBuilder builder;
+    //
+    EncryptJSONViewBuilder encryptBuilder;
 
     public RestViewBuilder code(int code) {
         builder.append(ViewConst.CODE, code);
@@ -43,45 +46,33 @@ public class RestViewBuilder{
         return this;
     }
 
-    public BaseJSONViewBuilder baseBuilder() {
+    public JSONViewBuilder baseBuilder() {
         return builder;
     }
 
-    public BaseJSONView build() {
-        return builder.build();
-    }
-
-    public AbstractBaseEncryptJSONView buildEncrypt() {
-        BaseJSONView baseJSONView = build();
-        //加密的jsonView
-        AbstractBaseEncryptJSONView abstractBaseEncryptJSONView = new DelegateEncryptJSONView();
-        abstractBaseEncryptJSONView.setBaseJSONView(baseJSONView);
-        return abstractBaseEncryptJSONView;
-    }
-
-    public AbstractBaseEncryptJSONView buildEncrypt(TextEncipher textEncipher) {
-        BaseJSONView baseJSONView = build();
-        //加密的jsonView
-        AbstractBaseEncryptJSONView abstractBaseEncryptJSONView = new SimpleEncryptJSONView(textEncipher);
-        abstractBaseEncryptJSONView.setBaseJSONView(baseJSONView);
-        return abstractBaseEncryptJSONView;
-    }
-
-    private static TextEncipher delegateTextEncrypt;
-    private static TextEncipher getDelegateTextEncrypt() {
-        if (delegateTextEncrypt == null) {
-            return null;
+    public JSONView build() {
+        JSONView JSONView = null;
+        if (!Objects.isNull(builder)) {
+            JSONView = builder.build();
         }
-        return delegateTextEncrypt;
+        if (!Objects.isNull(encryptBuilder)) {
+            AbstractEncryptJSONView encryptJSONView = encryptBuilder.buildGlobalDelegate();
+            encryptJSONView.setBaseJSONView(JSONView);
+            return encryptJSONView;
+        }
+        return JSONView;
     }
 
-    private class DelegateEncryptJSONView extends AbstractBaseEncryptJSONView {
-        @Override
-        public TextEncipher getTextEncipher() {
-            if (delegateTextEncrypt == null) {
-                delegateTextEncrypt = new AESTextEncipher();
-            }
-            return delegateTextEncrypt;
-        }
+    public RestViewBuilder encrypt() {
+        this.encryptBuilder = EncryptJSONViewBuilder.builder();
+        return this;
+    }
+
+    public AbstractEncryptJSONView buildEncrypt(TextEncipher textEncipher) {
+        JSONView JSONView = build();
+        //加密的jsonView
+        AbstractEncryptJSONView abstractBaseEncryptJSONView = new SimpleEncryptJSONView(textEncipher);
+        abstractBaseEncryptJSONView.setBaseJSONView(JSONView);
+        return abstractBaseEncryptJSONView;
     }
 }
